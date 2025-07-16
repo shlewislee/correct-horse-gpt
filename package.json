@@ -30,7 +30,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@google/generative-ai": "^0.14.1",
+    "@google/genai": "^1.9.0",
     "@types/node": "^20.19.8",
     "canvas-confetti": "^1.9.3",
     "correct-horse-gpt": "."
