@@ -1,6 +1,6 @@
 # correct-horse-gpt
 
-Generate secure, `correct-horse-battery-staple` style passphrase and compromise said passphrase with not-so-secure GPT telling you how to memorize it, because why not.
+Generate secure, `correct-horse-battery-staple` style passphrase and compromise said passphrase with not-so-secure LLM telling you how to memorize it, because why not.
 
 Supports Korean and English.
 
@@ -8,17 +8,9 @@ Supports Korean and English.
 
 - Sveltekit
 - Bun.js
-- Cloudflare Pages / Worker
+- Cloudflare Pages / Worker & Cloudflare Turnstile
 - Tailwind CSS
-- Google Gemini 1.5 Flash
-
-## Important notice
-
-GPT is powered by Google Gemini 1.5 Flash _free tier_, which means that **all your prompts can(and will) be used by Google to enhance their products**.
-
-You can safely use generated passphrase, as long as you don't use GPT functionality. Every generations happen locally and with `crpyto.getRandomValues()`. **Please do not use post-GPT-compromised passphrase. period. GPT functionality is entirely for entertainment purpose only** (Plus, it doesn't even work that well).
-
-It's one thing to believe that companies will regard your privacy and have decency to not look at your sensitive informations but when Google explicitly tells you that they will use your data, don't go there and put passphrases that you are going to use in production.
+- Google Gemini 2.0 Flash
 
 ## Why?
 
