@@ -1,7 +1,7 @@
 // Did you know that all these texts are AI-generated?
 
 const buttonTexts = [
-  "Let GPT imagine for you"
+  "Use ✨AI✨ to imagine",
 ];
 
 export function getRandomButtonText() {

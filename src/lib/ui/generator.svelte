@@ -4,23 +4,24 @@
 	import { getRandomButtonText } from '$lib/words/buttonTexts';
 	import { hangulToLatin } from '$lib/conversion';
 	import { getRandomWords } from '$lib/utils';
-	import { Turnstile } from 'svelte-turnstile';
 	import confetti from 'canvas-confetti';
+	import { Turnstile } from 'svelte-turnstile';
+	import Spinner from './spinner.svelte';
 
 	let option = {
-		lang: 'ko',
+		lang: 'en',
 		suffixRandomNumber: true,
 		separator: '-',
 		wordcount: 4,
-		wordset: 'medium'
+		wordset: 'small',
+		useNumber: true
 	};
-	let generatedPhrase: string = '올바르다-말-배터리-스테이플러-0';
-	let cleanGeneratedWords = ['올바르다', '말', '배터리', '스테이플러', 0];
-	let hangulConverted = 'dhfqkfmek-akf-qoxjfl-tmxpdlvmffj-0';
+	let generatedPhrase: string = 'correct-horse-battery-staple-0';
+	let cleanGeneratedWords = ['correct', 'horse', 'battery', 'staple', 0];
+	let hangulConverted = '';
 
 	let loadingGeneration = false;
-	let generatedStory =
-		"말이 '올바르다!'라고 외치며 배터리에 스테이플러로 0개의 스테이플을 꽂는 장면을 상상해보세요.";
+	let generatedStory = 'The correct horse needed a battery to staple 0 documents.';
 
 	let buttonText = getRandomButtonText();
 
@@ -30,19 +31,28 @@
 
 	function generatePassphrase(option) {
 		let result = '';
-		if (option.lang == 'ko') {
-			let words = getRandomWords(koreanList, option.wordcount);
-			words.push(option.suffixRandomNumber ? Math.floor(Math.random() * 10).toString() : '');
-			result = words.join(option.separator);
-			hangulConverted = hangulToLatin(result);
-			cleanGeneratedWords = words;
+		let words = [];
+		if (option.lang === 'ko') {
+			words = getRandomWords(koreanList, option.wordcount);
 		} else {
-			let words = getRandomWords(words_list[option.wordset], option.wordcount);
-			words.push(option.suffixRandomNumber ? Math.floor(Math.random() * 10).toString() : '');
-			result = words.join(option.separator);
-			cleanGeneratedWords = words;
+			words = getRandomWords(words_list[option.wordset], option.wordcount);
 		}
+		if (option.useNumber) {
+			words.push(Math.floor(Math.random() * 10).toString());
+		}
+
+		result = words.join(option.separator);
+		hangulConverted = option.lang === 'ko' ? hangulToLatin(result) : '';
+		cleanGeneratedWords = words;
 		generatedStory = '';
+
+		return result;
+	}
+
+	function changeSeparator(option) {
+		let result = '';
+		result = cleanGeneratedWords.join(option.separator);
+		hangulConverted = option.lang === 'ko' ? hangulToLatin(result) : '';
 
 		return result;
 	}
@@ -111,29 +121,33 @@
 	</div>
 	<div class="flex flex-col gap-4 border p-6">
 		<div class="flex flex-row">
-			<label for="separator" class="my-auto">Language</label>
+			<label for="language" class="my-auto">Language</label>
 			<select
-				name="separator"
+				name="language"
 				class="ml-auto w-24 p-2 md:w-48"
-				id="separator-select"
+				id="language"
 				bind:value={option.lang}
 				on:change={() => {
 					generatedPhrase = '';
 					hangulConverted = '';
+					generatedPhrase = generatePassphrase(option);
 				}}
 			>
-				<option value="ko">한국어</option>
 				<option value="en">English</option>
+				<option value="ko">한국어</option>
 			</select>
 		</div>
 		{#if option.lang == 'en'}
 			<div class="flex flex-row">
-				<label for="separator" class="my-auto">Wordset</label>
+				<label for="wordset-size" class="my-auto">Wordset</label>
 				<select
-					name="separator"
+					name="wordset-size"
 					class="ml-auto w-48 p-2"
-					id="separator-select"
+					id="worset-size-select"
 					bind:value={option.wordset}
+					on:change={() => {
+						generatedPhrase = generatePassphrase(option);
+					}}
 				>
 					<option value="small">Small</option>
 					<option value="medium">Medium</option>
@@ -151,6 +165,9 @@
 				max="16"
 				min="3"
 				bind:value={option.wordcount}
+				on:change={() => {
+					generatedPhrase = generatePassphrase(option);
+				}}
 			/>
 			<span class="m-auto md:ml-8 md:mr-0">{option.wordcount} words</span>
 		</div>
@@ -161,6 +178,9 @@
 				class="ml-auto p-2"
 				id="separator-select"
 				bind:value={option.separator}
+				on:change={() => {
+					generatedPhrase = changeSeparator(option);
+				}}
 			>
 				<option value="">None</option>
 				<option value=".">.</option>
@@ -182,63 +202,89 @@
 				<option value=")">)</option>
 			</select>
 		</div>
-		<div class="flex w-full flex-col gap-6">
+		<div class="flex flex-row">
+			<label for="include-number" class="my-auto">Include number?</label>
+			<input
+				type="checkbox"
+				name="include-number"
+				class="ml-auto p-2"
+				id="include-number-cb"
+				bind:checked={option.useNumber}
+				on:change={() => {
+					generatedPhrase = generatePassphrase(option);
+				}}
+			/>
+		</div>
+
+		<div class="flex flex-row">
 			<button
-				class="bg-sky-400 p-2"
+				class="m-auto h-12 w-full rounded-lg bg-blue-700 p-2 text-white"
 				on:click={() => {
 					generatedPhrase = generatePassphrase(option);
-				}}>Generate Passphrase</button
+				}}>Generate New Passphrase</button
 			>
-
-			<div class="flex flex-col border p-4 shadow-md">
-				<h2 class="pb-2 font-serif italic">GPT says...</h2>
-				{#if loadingGeneration}
-					<p class="text-center">Loading generation... Please wait</p>
-				{:else}
-					<p class="text-center font-serif italic">{generatedStory}</p>
-				{/if}
-				<button on:click={handleGenerationRequest} class="mx-auto mt-4 bg-green-400 p-2 text-xs"
-					>{buttonText}</button
-				>
-				<div class="flex flex-row">
-					<Turnstile
-						bind:reset
-						class="mx-auto pt-2"
-						siteKey="0x4AAAAAAAegoSKCA6LvLU2r"
-						theme="auto"
-						appearance="interaction-only"
-						size="compact"
-						on:callback={(t) => {
-							cfToken = t.detail.token;
-						}}
-					></Turnstile>
+		</div>
+		{#if generatedStory != ''}
+			<div class="flex w-full flex-col gap-6">
+				<div class="flex flex-col border px-4 py-4 shadow-md">
+					<h2 class="pb-6 font-serif text-sm italic">AI says...</h2>
+					<div class="flex flex-col flex-wrap pb-6">
+						{#if loadingGeneration}
+							<div class="mx-auto">
+								<Spinner></Spinner>
+							</div>
+						{:else}
+							<p class="text-center font-serif text-xl italic">{generatedStory}</p>
+						{/if}
+					</div>
 				</div>
+			</div>
+		{/if}
+
+		<div class="flex flex-row">
+			<button
+				on:click={handleGenerationRequest}
+				class="m-auto h-12 w-full rounded-lg bg-green-800 p-2 text-white">{buttonText}</button
+			>
+		</div>
+		<div class="m-auto flex w-full flex-row" style={cfToken == '' ? '' : 'display:none'}>
+			<div class="mx-auto flex flex-col">
+				<Turnstile
+					bind:reset
+					class="mx-auto"
+					siteKey="0x4AAAAAAAegoSKCA6LvLU2r"
+					theme="auto"
+					appearance="always"
+					size="normal"
+					on:callback={(t) => {
+						cfToken = t.detail.token;
+					}}
+				></Turnstile>
 			</div>
 		</div>
 	</div>
+
 	<div class="flex flex-col gap-4 border p-6">
 		<h2 class="font-bold">Important Notice</h2>
+		<p>DO NOT USE AI FEATURE FOR PASSPHRASES THAT YOU WILL ACTUALLY USE</p>
+
 		<p class="text-justify">
-			GPT is powered by Google Gemini 1.5 Flash<span class="italic">free tier</span>, which means
-			that
+			AI generation is powered by Google Gemini 2.0 Flash <span class="italic">free tier</span>,
+			which means that
 			<span class="font-bold"
-				>all your prompts can(and will) be used by Google to enhance their products.</span
+				>all your passphrases, after you click the AI button, can(and will) be sent to and used by
+				Google to enhance their products.</span
 			>
 		</p>
 		<p class="text-justify">
-			You can safely use generated passphrase, as long as you don't use GPT functionality. Every
-			generations happen locally and with <span class="bg-black p-1 font-mono text-white"
-				>crpyto.getRandomValues()</span
-			>.
-			<span class="font-bold">
-				Please do not use post-GPT-compromised passphrase. period. GPT functionality is entirely for
-				entertainment purpose only
-			</span>(Plus, it doesn't even work that well).
+			For security, passphrases generated here are created locally using <span
+				class="bg-black p-1 font-mono text-white">crpyto.getRandomValues()</span
+			>. You can safely use generated passphrase, as long as you don't use LLM functionality.
 		</p>
 		<p class="text-justify">
-			It's one thing to believe that companies will regard your privacy and have decency to not look
-			at your sensitive informations but when Google explicitly tells you that they will use your
-			data, don't go there and put passphrases that you are going to use in production.
+			Remember that while many companies aim to respect user privacy, Google's terms explicitly
+			state that your data may be used for product improvements. For sensitive or production-related
+			passphrases, we advise using a trusted, offline method.
 		</p>
 	</div>
 </div>
