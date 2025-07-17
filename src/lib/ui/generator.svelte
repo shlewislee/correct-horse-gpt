@@ -8,7 +8,16 @@
 	import { Turnstile } from 'svelte-turnstile';
 	import Spinner from './spinner.svelte';
 
-	let option = {
+	interface OptionConfig {
+		lang: 'en' | 'ko';
+		suffixRandomNumber: boolean;
+		separator: string;
+		wordcount: number;
+		wordset: 'small' | 'medium' | 'large';
+		useNumber: boolean;
+	}
+
+	let option: OptionConfig = {
 		lang: 'en',
 		suffixRandomNumber: true,
 		separator: '-',
@@ -29,7 +38,7 @@
 
 	let cfToken = '';
 
-	function generatePassphrase(option) {
+	function generatePassphrase(option: OptionConfig) {
 		let result = '';
 		let words = [];
 		if (option.lang === 'ko') {
@@ -49,7 +58,7 @@
 		return result;
 	}
 
-	function changeSeparator(option) {
+	function changeSeparator(option: OptionConfig) {
 		let result = '';
 		result = cleanGeneratedWords.join(option.separator);
 		hangulConverted = option.lang === 'ko' ? hangulToLatin(result) : '';
@@ -87,7 +96,7 @@
 	$: generatedStory;
 </script>
 
-<div class="mx-auto mt-auto flex max-w-2xl flex-col flex-wrap gap-2 pb-2 pt-4 md:w-1/2">
+<div class="mx-auto mt-auto flex max-w-2xl flex-col flex-wrap gap-2 pt-4 pb-2 md:w-1/2">
 	<div class="flex flex-col gap-2">
 		<input
 			type="text"
@@ -115,7 +124,7 @@
 				}}
 			/>
 		{/if}
-		<p class="text-center text-xs italic text-gray-400">
+		<p class="text-center text-xs text-gray-400 italic">
 			{option.lang == 'en' ? 'Click the box to copy' : 'Click the boxes to copy'}
 		</p>
 	</div>
@@ -158,7 +167,7 @@
 		<div class="wrap flex flex-col gap-4 md:flex-row md:gap-0">
 			<label for="wordcount" class="my-auto">Number of words</label>
 			<input
-				class="ml-auto mr-auto w-5/6 md:ml-auto md:mr-0 md:w-1/2"
+				class="mr-auto ml-auto w-5/6 md:mr-0 md:ml-auto md:w-1/2"
 				type="range"
 				name="wordcount"
 				id="wordcount-input"
@@ -169,7 +178,7 @@
 					generatedPhrase = generatePassphrase(option);
 				}}
 			/>
-			<span class="m-auto md:ml-8 md:mr-0">{option.wordcount} words</span>
+			<span class="m-auto md:mr-0 md:ml-8">{option.wordcount} words</span>
 		</div>
 		<div class="flex flex-row">
 			<label for="separator" class="my-auto">Separator</label>
@@ -266,7 +275,7 @@
 
 	<div class="flex flex-col gap-4 border p-6">
 		<h2 class="font-bold">Important Notice</h2>
-		<p>DO NOT USE AI FEATURE FOR PASSPHRASES THAT YOU WILL ACTUALLY USE</p>
+		<p class="text-center font-bold">USING AI FEATURE COMPROMISES THE GENERATED PASSPHRASE</p>
 
 		<p class="text-justify">
 			AI generation is powered by Google Gemini 2.0 Flash <span class="italic">free tier</span>,

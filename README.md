@@ -5,6 +5,7 @@ Generate secure, `correct-horse-battery-staple` style passphrase and compromise 
 Supports Korean and English.
 
 ## Technologies used
+
 - Sveltekit
 - Bun.js
 - Cloudflare Pages / Worker
@@ -13,7 +14,7 @@ Supports Korean and English.
 
 ## Important notice
 
-GPT is powered by Google Gemini 1.5 Flash *free tier*, which means that **all your prompts can(and will) be used by Google to enhance their products**.
+GPT is powered by Google Gemini 1.5 Flash _free tier_, which means that **all your prompts can(and will) be used by Google to enhance their products**.
 
 You can safely use generated passphrase, as long as you don't use GPT functionality. Every generations happen locally and with `crpyto.getRandomValues()`. **Please do not use post-GPT-compromised passphrase. period. GPT functionality is entirely for entertainment purpose only** (Plus, it doesn't even work that well).
 
@@ -32,5 +33,6 @@ bun run dev
 You will also have to set `TURNSTILE_API_KEY` and `GEMINI_API_KEY` as environment variables. It's best you create `.env` file and for Cloudflare Pages, use Secrets(they're just variables).
 
 ## Credits
+
 - English words list directly from [quantum5/correcthorsebatterystaple](https://github.com/quantum5/correcthorsebatterystaple)
 - Korean words from [국립국어원](https://www.korean.go.kr/front/etcData/etcDataView.do?mn_id=46&etc_seq=71) (processed)
