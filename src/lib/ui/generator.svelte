@@ -233,7 +233,7 @@
 				}}>Generate New Passphrase</button
 			>
 		</div>
-		{#if generatedStory != ''}
+		{#if generatedStory != '' || loadingGeneration}
 			<div class="flex w-full flex-col gap-6">
 				<div class="flex flex-col border px-4 py-4 shadow-md">
 					<h2 class="pb-6 font-serif text-sm italic">AI says...</h2>
