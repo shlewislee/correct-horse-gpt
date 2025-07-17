@@ -253,6 +253,7 @@
 		<div class="flex flex-row">
 			<button
 				on:click={handleGenerationRequest}
+				disabled={loadingGeneration}
 				class="m-auto h-12 w-full rounded-lg bg-green-800 p-2 text-white">{buttonText}</button
 			>
 		</div>
