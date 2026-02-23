@@ -3,6 +3,7 @@ import { validateToken } from '$lib/validation';
 
 import { TURNSTILE_API_KEY } from '$env/static/private';
 import { GEMINI_API_KEY } from '$env/static/private';
+import { GEMINI_MODEL_NAME } from '$env/static/private';
 
 export async function POST({ request }) {
 	const data = await request.json();
@@ -51,7 +52,7 @@ export async function POST({ request }) {
 			words;
 
 		const model = genAI.models.generateContent({
-			model: 'gemini-2.0-flash',
+			model: GEMINI_MODEL_NAME,
 			config: {
 				responseMimeType: 'application/json',
 				responseSchema: {

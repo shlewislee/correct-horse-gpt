@@ -250,14 +250,7 @@
 			</div>
 		{/if}
 
-		<div class="flex flex-row">
-			<button
-				on:click={handleGenerationRequest}
-				disabled={loadingGeneration}
-				class="m-auto h-12 w-full rounded-lg bg-green-800 p-2 text-white">{buttonText}</button
-			>
-		</div>
-		<div class="m-auto flex w-full flex-row" style={cfToken == '' ? '' : 'display:none'}>
+		<div class="m-auto flex w-full flex-row">
 			<div class="mx-auto flex flex-col">
 				<Turnstile
 					bind:reset
@@ -272,6 +265,13 @@
 				></Turnstile>
 			</div>
 		</div>
+		<div class="flex flex-row">
+			<button
+				on:click={handleGenerationRequest}
+				disabled={loadingGeneration}
+				class="m-auto h-12 w-full rounded-lg bg-green-800 p-2 text-white">{buttonText}</button
+			>
+		</div>
 	</div>
 
 	<div class="flex flex-col gap-4 border p-6">
@@ -279,11 +279,11 @@
 		<p class="text-center font-bold">USING AI FEATURE COMPROMISES THE GENERATED PASSPHRASE</p>
 
 		<p class="text-justify">
-			AI generation is powered by Google Gemini 2.0 Flash <span class="italic">free tier</span>,
+			AI generation is powered by Google Gemini 2.5 Flash <span class="italic">free tier</span>,
 			which means that
 			<span class="font-bold"
-				>all your passphrases, after you click the AI button, can(and will) be sent to and used by
-				Google to enhance their products.</span
+				>all your passphrases, after you click the AI button, will be sent to and used by Google to
+				enhance their products.</span
 			>
 		</p>
 		<p class="text-justify">
